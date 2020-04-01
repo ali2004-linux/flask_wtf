@@ -1,0 +1,50 @@
+from flask import Flask,render_template,request
+from flask_wtf import FlaskForm
+from wtforms import TextField, PasswordField
+from wtforms.validators import DataRequired
+from os import system
+#----------------------------------
+
+#frist pip install flask and flask_wtf and python3 app.py
+
+#coded by Ali2004h => github.com/ali2004-linux
+try:
+	#----------------------------------
+	class LoginForm(FlaskForm):
+		username = TextField(validators=[DataRequired()])
+		password = PasswordField(validators=[DataRequired()])
+	#----------------------------------
+	app = Flask(__name__)
+	#----------------------------------
+	app.config["SECRET_KEY"] = "your_secretkeyxxx"
+	#----------------------------------
+	@app.route("/",methods=["POST","GET"])
+	def index():
+		loginform = LoginForm()
+		return render_template("index.html",loginform=loginform)
+	#----------------------------------
+	@app.route("/login",methods=["POST"])
+	def login():
+		login_fr = LoginForm(request.form)
+		if not login_fr.validate_on_submit():
+	        	return "Error!!"
+		user = request.form[('username')]
+		passw = request.form[('password')]
+		return(render_template("p.html",user=user,passw=passw))
+		#----------------------------------
+	@app.errorhandler(404)
+	def not_found(error):
+		return ("""
+			<html>
+				<head>
+					<title> 404 | Not Found</title>
+				</head>
+				<body style="background:#ddd;">
+					<h1 align="center" style="margin-top:50px;">   404  :/ <br><br> Not Found Page </h1><br><br>
+					<p align="center" style="font-style: italic;color:red;">Github : ali2004-linux  <a href="https://github.com/ali2004-linux">[Click]</a></p>
+				</body>
+			</html>""")
+	#----------------------------------
+	if __name__ == '__main__': app.run(debug=True)
+except ModuleNotFoundError:
+	system("pip3 install flask") and system("pip3 install flask_wtf") or system("pip install flask") and system("pip install flask_wtf")
